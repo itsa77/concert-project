@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin
@@ -36,38 +38,35 @@ public class AuthController {
         if (userDao.getUserByUsername(user.getUsername()) != null) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-        System.out.println("PASSWORD SENT TO REGISTRATION: " + user.getPasswordHash());     //---------------
+
         String hashed = BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt(12));
         user.setPasswordHash(hashed);
-        User created = userDao.createUser(user);
 
+        User created = userDao.createUser(user);
 
         if (created == null) {
             return ResponseEntity.internalServerError().body("Error creating user");
-        } return ResponseEntity.ok("User registered successfully");
+        }
+        return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
+
         User user = userDao.getUserByUsername(loginRequest.getUsername());
         if (user == null) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
-        System.out.println(
-                "CHECK RESULT: " + BCrypt.checkpw(                                         //----------------------
-                        loginRequest.getPassword(),
-                        user.getPasswordHash()
-                )
-        );
-
-        System.out.println("RAW PASSWORD: " + loginRequest.getPassword());
-        System.out.println("HASH IN DB: " + user.getPasswordHash());
 
         if (!BCrypt.checkpw(loginRequest.getPassword(), user.getPasswordHash())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
-        String token = jwtUtil.generateToken(user.getUsername());
-        LoginResponseDto response = new LoginResponseDto(token, user.getUsername(), user.getUserId());
+        List<String> roles = userDao.getUserRolesByUsername(user.getUsername());
+
+        String token = jwtUtil.generateToken(user.getUsername(), roles);
+
+        LoginResponseDto response = new LoginResponseDto(token, user.getUsername(), user.getUserId(), roles);
+
         return ResponseEntity.ok(response);
     }
 }

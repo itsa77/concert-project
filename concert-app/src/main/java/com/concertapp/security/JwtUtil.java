@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -16,7 +17,7 @@ public class JwtUtil {
     private final long expirationMs = 86400000; // 24 hours
 
 
-    public String generateToken(String username) {
+    public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())

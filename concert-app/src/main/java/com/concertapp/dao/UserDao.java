@@ -2,6 +2,8 @@ package com.concertapp.dao;
 
 import com.concertapp.model.User;
 
+import java.util.List;
+
 public interface UserDao {
     User createUser(User user);
 
@@ -12,4 +14,6 @@ public interface UserDao {
     User getUserById(int userId);
 
     User getUserByUsername(String username);
+
+    List<String> getUserRolesByUsername(String username);
 }

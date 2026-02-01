@@ -8,6 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public class UserJdbcDao implements UserDao{
@@ -19,12 +22,19 @@ public class UserJdbcDao implements UserDao{
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
+
         String sql = """
-        INSERT INTO users (username, first_name, last_name, email, password_hash)
-        VALUES (?, ?, ?, ?, ?)
-        RETURNING user_id, total_concerts, wanting_email_updates, created_at
-        """;
+            INSERT INTO users (username, first_name, last_name, email, password_hash)
+            VALUES (?, ?, ?, ?, ?)
+            RETURNING user_id, total_concerts, wanting_email_updates, created_at
+            """;
+        String roleSql = """
+            INSERT INTO user_roles (user_id, role_id)
+            VALUES (?, (SELECT role_id FROM roles WHERE name = 'USER'))
+            """;
+
         try {
             SqlRowSet rs = jdbcTemplate.queryForRowSet(sql,
                     user.getUsername(),
@@ -38,13 +48,33 @@ public class UserJdbcDao implements UserDao{
                 user.setTotalConcerts(rs.getInt("total_concerts"));
                 user.setWantingEmailUpdates(rs.getBoolean("wanting_email_updates"));
                 user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                jdbcTemplate.update(roleSql, user.getUserId());
+
                 return user;
             }
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to database", e);
         } catch (DataAccessException e) {
             throw new DaoException("Error creating user", e);
-        } return null;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getUserRolesByUsername(String username) {
+        String sql = """
+            SELECT r.name FROM roles r
+            JOIN user_roles ur ON ur.role_id = r.role_id
+            JOIN users u ON u.user_id = ur.user_id
+            WHERE LOWER(u.username) = LOWER(?);
+            """;
+        try {
+            return jdbcTemplate.queryForList(sql, String.class, username);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to database", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Error getting user roles", e);
+        }
     }
 
     @Override
