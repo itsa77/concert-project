@@ -1,11 +1,16 @@
 package com.concertapp.service;
 
 import com.concertapp.model.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.concertapp.dao.UserDao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,17 +24,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        // You will need to implement this in your UserDao
         User user = userDao.getUserByUsername(username);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPasswordHash())   // hashed password
-                .roles("USER")                      // default role
-                .build();
+        List<String> roles = userDao.getUserRolesByUsername(username);
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        for(String role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPasswordHash(),
+                authorities
+        );
     }
 }

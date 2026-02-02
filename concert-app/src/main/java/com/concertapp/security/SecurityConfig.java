@@ -23,7 +23,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Not needed for REST APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Registration/Login allowed
+                        .requestMatchers("/auth/login", "/auth/register").permitAll() // Registration/Login allowed
                         .anyRequest().authenticated()            // Everything else requires auth
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

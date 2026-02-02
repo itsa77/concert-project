@@ -20,10 +20,19 @@ public class JwtUtil {
     public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public List<String> extractRoles(String token) {
+        Object rolesObj = parseToken(token).getBody().get("roles");
+        if (rolesObj instanceof List<?> list) {
+            return list.stream().map(String::valueOf).toList();
+        }
+        return List.of();
     }
 
     public String extractUsername(String token) {
