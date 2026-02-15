@@ -5,7 +5,13 @@ import RegisterView from "./views/RegisterView";
 import UserDashboardView from "./views/UserDashboardView";
 import ConcertsView from "./views/ConcertsView";
 import AddConcertView from "./views/AddConcertView";
+import FriendsView from "./views/FriendsView";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
+
+function RecentConcerts() {
+  return <div>Recent Concerts</div>
+}
 
 
 function App() {
@@ -14,7 +20,7 @@ function App() {
    <BrowserRouter>
     <Routes>
       {/* default route */}
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Navigate to="/dashboard" />} />
       
       {/* public routes */}
       <Route path="/login" element={<LoginView />} />
@@ -28,25 +34,13 @@ function App() {
             <UserDashboardView />
           </ProtectedRoute>
         }
-      />
-
-      <Route
-        path="/concerts"
-        element={
-          <ProtectedRoute>
-            <ConcertsView />
-          </ProtectedRoute>
-        } 
-      />
-
-      <Route
-        path="/concerts/new"
-        element={
-          <ProtectedRoute>
-            <AddConcertView />
-          </ProtectedRoute>
-        }
-      />
+      >
+        {/* These render inside UserDashboardView via <Outlet /> */}
+        <Route index element={<RecentConcerts />} />
+        <Route path="concerts" element={<ConcertsView />} />
+        <Route path="friends" element={<FriendsView />} />
+        <Route path="add" element={<AddConcertView />} />
+      </Route>
 
       {/* catch-all */}
       <Route path="*" element={<Navigate to="/login" />} />
