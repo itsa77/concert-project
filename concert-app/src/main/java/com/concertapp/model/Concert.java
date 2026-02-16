@@ -1,44 +1,39 @@
 package com.concertapp.model;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class Concert {
 
     private int concertId;
-    private int userId;
     private int artistId;
     private int venueId;
     private LocalDate date;
-    private LocalDateTime createdAt;
+    private LocalTime startTime;
     private Integer tourId;
     private Integer festivalId;
-    private String notes;
+    private int createdBy;
+    private LocalDateTime createdAt;
 
     private List<Integer> openingActIds;
 
     public Concert() {}
 
-    public Concert(int userId, int artistId, int venueId, LocalDate date) {
-        this.userId = userId;
-        this.artistId = artistId;
-        this.venueId = venueId;
-        this.date = date;
-    }
-
-    public Concert(int concertId, int userId, int artistId, int venueId,
-                   LocalDate date, LocalDateTime createdAt, Integer tourId,
-                   Integer festivalId, String notes, List<Integer> openingActIds) {
+    public Concert(int concertId, int artistId, int venueId, LocalDate date,
+                   LocalTime startTime, Integer tourId, Integer festivalId,
+                   int createdBy, LocalDateTime createdAt, List<Integer> openingActIds) {
         this.concertId = concertId;
-        this.userId = userId;
         this.artistId = artistId;
         this.venueId = venueId;
         this.date = date;
-        this.createdAt = createdAt;
+        this.startTime = startTime;
         this.tourId = tourId;
         this.festivalId = festivalId;
-        this.notes = notes;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
         this.openingActIds = openingActIds;
     }
 
@@ -50,13 +45,6 @@ public class Concert {
         this.concertId = concertId;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public int getArtistId() {
         return artistId;
@@ -90,6 +78,22 @@ public class Concert {
         this.createdAt = createdAt;
     }
 
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public Integer getTourId() {
         return tourId;
     }
@@ -106,13 +110,6 @@ public class Concert {
         this.festivalId = festivalId;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
     public List<Integer> getOpeningActIds() {
         return openingActIds;
@@ -121,4 +118,6 @@ public class Concert {
     public void setOpeningActIds(List<Integer> openingActIds) {
         this.openingActIds = openingActIds;
     }
+
+
 }

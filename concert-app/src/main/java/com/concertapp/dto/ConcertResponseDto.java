@@ -2,6 +2,7 @@ package com.concertapp.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ConcertResponseDto {
@@ -11,14 +12,13 @@ public class ConcertResponseDto {
     private String venueName;
     private String venueCity;
     private String venueState;
-
     private String tourName;
     private String festivalName;
-
     private LocalDate date;
-    private String notes;
+    private LocalTime startTime;
+    private int createdById;
+    private String createdByUsername;
     private LocalDateTime createdAt;
-
     private List<String> openingActNames;
 
     public ConcertResponseDto() {}
@@ -87,12 +87,28 @@ public class ConcertResponseDto {
         this.date = date;
     }
 
-    public String getNotes() {
-        return notes;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(int createdById) {
+        this.createdById = createdById;
+    }
+
+    public String getCreatedByUsername() {
+        return createdByUsername;
+    }
+
+    public void setCreatedByUsername(String createdByUsername) {
+        this.createdByUsername = createdByUsername;
     }
 
     public LocalDateTime getCreatedAt() {

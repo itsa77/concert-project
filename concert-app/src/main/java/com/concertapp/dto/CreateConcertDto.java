@@ -1,16 +1,17 @@
 package com.concertapp.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class CreateConcertDto {
 
-    private String artistName;              // main artist (instead of ID)
+    private String artistName;
     private int venueId;
     private LocalDate date;
-    private String notes;
+    private LocalTime startTime;
 
-    private List<String> openingActNames;   // opening act names instead of IDs
+    private List<String> openingActNames;
     private String tourName;
     private String festivalName;
 
@@ -23,8 +24,9 @@ public class CreateConcertDto {
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public LocalTime getStartTime() { return startTime; }
+    public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
+
 
     public List<String> getOpeningActNames() { return openingActNames; }
     public void setOpeningActNames(List<String> openingActNames) { this.openingActNames = openingActNames; }
@@ -34,5 +36,7 @@ public class CreateConcertDto {
 
     public String getFestivalName() { return festivalName; }
     public void setFestivalName(String festivalName) { this.festivalName = festivalName; }
+
 }
+
 

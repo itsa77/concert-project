@@ -73,11 +73,13 @@ CREATE TABLE concert_event (
 	start_time TIME,
 	tour_id INT,
 	festival_id INT,
+	created_by INT NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (artist_id) REFERENCES artist(artist_id),
 	FOREIGN KEY (venue_id) REFERENCES venue(venue_id),
 	FOREIGN KEY (tour_id) REFERENCES tour(tour_id),
-	FOREIGN KEY	(festival_id) REFERENCES festival(festival_id)
+	FOREIGN KEY	(festival_id) REFERENCES festival(festival_id),
+	FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
 CREATE TABLE user_concert (

@@ -4,12 +4,9 @@ import com.concertapp.dao.*;
 import com.concertapp.model.Concert;
 import com.concertapp.dto.CreateConcertDto;
 import com.concertapp.dto.ConcertResponseDto;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -49,19 +46,21 @@ public class ConcertController {
             @RequestBody CreateConcertDto dto) {
         int userId = userDao.getUserByUsername(ud.getUsername()).getUserId();
         Integer artistId = artistDao.getOrCreateArtistId(dto.getArtistName());
+
         List<Integer> openingActIds = null;
-        if (dto.getOpeningActNames() != null) {
+        if (dto.getOpeningActNames() != null && !dto.getOpeningActNames().isEmpty()) {
             openingActIds = dto.getOpeningActNames().stream()
-                    .map(name -> artistDao.getOrCreateArtistId(name))
+                    .map(artistDao::getOrCreateArtistId)
                     .toList();
         }
         Concert concert = new Concert();
-        concert.setUserId(userId);
         concert.setArtistId(artistId);
         concert.setVenueId(dto.getVenueId());
         concert.setDate(dto.getDate());
-        concert.setNotes(dto.getNotes());
+        concert.setStartTime(dto.getStartTime());
+        concert.setCreatedBy(userId);
         concert.setOpeningActIds(openingActIds);
+
         Concert created = concertDao.createConcert(
                 concert,
                 dto.getTourName(),
@@ -73,7 +72,7 @@ public class ConcertController {
     @GetMapping
     public List<ConcertResponseDto> getConcerts(@AuthenticationPrincipal UserDetails ud) {
         int userId = userDao.getUserByUsername(ud.getUsername()).getUserId();
-        return concertDao.getConcertsForUser(userId)
+        return concertDao.getConcertsAttendedByUser(userId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -87,7 +86,8 @@ public class ConcertController {
             throw new RuntimeException("Concert not found");
         }
         int userId = userDao.getUserByUsername(ud.getUsername()).getUserId();
-        if (concert.getUserId() != userId) {
+
+        if (!concertDao.userHasAccessToConcert(userId, concertId)) {
             throw new RuntimeException("Forbidden");
         } return mapToResponse(concert);
     }
@@ -103,27 +103,51 @@ public class ConcertController {
         concertDao.deleteConcert(concertId);
     }
 
+    @DeleteMapping("/{concertId}")
+    public void removeMeFromConcert(@PathVariable int concertId,
+                                    @AuthenticationPrincipal UserDetails ud) {
+
+        int userId = userDao.getUserByUsername(ud.getUsername()).getUserId();
+
+        Concert concert = concertDao.getConcertById(concertId);
+        if (concert == null) {
+            throw new RuntimeException("Concert not found");
+        }
+
+        boolean removed = concertDao.removeUserFromConcert(userId, concertId);
+        if (!removed) {
+            throw new RuntimeException("Forbidden");
+        }
+    }
+
     private ConcertResponseDto mapToResponse(Concert c) {
         ConcertResponseDto dto = new ConcertResponseDto();
+
         dto.setConcertId(c.getConcertId());
         dto.setDate(c.getDate());
-        dto.setNotes(c.getNotes());
+        dto.setStartTime(c.getStartTime());
         dto.setCreatedAt(c.getCreatedAt());
+
         dto.setArtistName(artistDao.getArtistName(c.getArtistId()));
+
         var venue = venueDao.getVenueById(c.getVenueId());
         dto.setVenueName(venue.getName());
         dto.setVenueCity(venue.getCity());
         dto.setVenueState(venue.getState());
+
         if (c.getTourId() != null) {
             dto.setTourName(tourDao.getTourName(c.getTourId()));
         }
         if (c.getFestivalId() != null) {
             dto.setFestivalName(festivalDao.getFestivalName(c.getFestivalId()));
         }
+
+        dto.setCreatedByUsername(userDao.getUsernameByUserId(c.getCreatedBy()));
+
         if (c.getOpeningActIds() != null) {
             dto.setOpeningActNames(
                     c.getOpeningActIds().stream()
-                            .map(id -> artistDao.getArtistName(id))
+                            .map(artistDao::getArtistName)
                             .toList()
             );
         } return dto;

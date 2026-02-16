@@ -161,6 +161,22 @@ public class UserJdbcDao implements UserDao{
         return null;
     }
 
+    @Override
+    public String getUsernameByUserId(int userId) {
+        String sql = """
+                SELECT username
+                FROM users
+                WHERE user_id = ?
+                """;
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, userId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to the database when getting username by user id", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Database error when getting username by user id", e);
+        }
+    }
+
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setUserId(rs.getInt("user_id"));
