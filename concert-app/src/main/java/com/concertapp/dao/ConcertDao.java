@@ -9,6 +9,8 @@ public interface ConcertDao {
 
     boolean deleteConcert(int concertId);
 
+    boolean addUserToConcert(int userId, int concertId);
+
     boolean removeUserFromConcert(int userId, int concertId);
 
     Concert getConcertById(int concertId);

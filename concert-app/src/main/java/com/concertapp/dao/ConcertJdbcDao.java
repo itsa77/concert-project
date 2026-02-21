@@ -88,7 +88,6 @@ public class ConcertJdbcDao implements ConcertDao {
 
     @Override
     public boolean deleteConcert(int concertId) {
-
         String sql = """
             DELETE FROM concert_event
             WHERE concert_event_id = ?
@@ -100,6 +99,23 @@ public class ConcertJdbcDao implements ConcertDao {
             throw new DaoException("Unable to connect to database when deleting concert", e);
         } catch (DataAccessException e) {
             throw new DaoException("Database error deleting concert", e);
+        }
+    }
+
+    @Override
+    public boolean addUserToConcert(int userId, int concertId) {
+        String sql = """
+                INSERT INTO user_concert (user_id, concert_event_id)
+                VALUES (?, ?)
+                ON CONFLICT (user_id, concert_event_id) DO NOTHING
+                """;
+        try {
+            int rows = jdbcTemplate.update(sql, userId, concertId);
+            return rows > 0;
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to the database when adding user to concert", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Database error adding user to concert", e);
         }
     }
 
