@@ -2,6 +2,7 @@ package com.concertapp.dao;
 
 import com.concertapp.exception.DaoException;
 import com.concertapp.model.User;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -174,6 +175,23 @@ public class UserJdbcDao implements UserDao{
             throw new DaoException("Unable to connect to the database when getting username by user id", e);
         } catch (DataAccessException e) {
             throw new DaoException("Database error when getting username by user id", e);
+        }
+    }
+
+    @Override
+    public int getTotalConcertsByUserId(int userId) {
+        String sql = """
+                SELECT total_concerts
+                FROM users
+                WHERE user_id = ?
+                """;
+        try {
+            Integer total = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+            return total == null ? 0 : total;
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to the database when retrieving total concerts", e);
+        } catch (DataAccessException e) {
+            throw new DaoException("Database error retrieving total concerts", e);
         }
     }
 

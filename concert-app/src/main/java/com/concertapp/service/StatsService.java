@@ -1,12 +1,14 @@
 package com.concertapp.service;
 
-import com.concertapp.dao.UserDao;
 import com.concertapp.dao.StatsDao;
+import com.concertapp.dao.UserDao;
 import com.concertapp.dto.DayStatsDto;
 import com.concertapp.dto.MonthStatsDto;
+import com.concertapp.dto.UserRankDto;
 import com.concertapp.model.UserYearlyStats;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.concertapp.dto.UserRankDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,5 +46,12 @@ public class StatsService {
     public List<DayStatsDto> getConcertDetailsForUserOnDate(String username, LocalDate date) {
         int userId = userDao.getUserByUsername(username).getUserId();
         return statsDao.getConcertDetailsForUserOnDate(userId, date);
+    }
+
+    @Transactional(readOnly = true)
+    public UserRankDto getRankForUser(String username) {
+        int userId = userDao.getUserByUsername(username).getUserId();
+        int totalConcerts = userDao.getTotalConcertsByUserId(userId);
+        return RankUtil.fromTotalConcerts(totalConcerts);
     }
 }

@@ -2,6 +2,7 @@ package com.concertapp.controller;
 
 import com.concertapp.dto.DayStatsDto;
 import com.concertapp.dto.MonthStatsDto;
+import com.concertapp.dto.UserRankDto;
 import com.concertapp.model.UserYearlyStats;
 import com.concertapp.service.StatsService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,12 +27,12 @@ public class StatsController {
         return statsService.getYearlyStatsForUser(ud.getUsername());
     }
 
-    @GetMapping
+    @GetMapping("/year/{year}/months")
     public List<MonthStatsDto> getMonthly(@PathVariable int year, @AuthenticationPrincipal UserDetails ud) {
         return statsService.getMonthlyStatsForUser(ud.getUsername(), year);
     }
 
-    @GetMapping
+    @GetMapping("/year/{year}/month/{month}/days")
     public List<Integer> getDays(@PathVariable int year, @PathVariable int month,
                                  @AuthenticationPrincipal UserDetails ud) {
         return statsService.getConcertDaysForUser(ud.getUsername(), year, month);
@@ -44,5 +45,10 @@ public class StatsController {
         return statsService.getConcertDetailsForUserOnDate(
                 ud.getUsername(),java.time.LocalDate.parse(date)
         );
+    }
+
+    @GetMapping("/rank")
+    public UserRankDto getRank(@AuthenticationPrincipal UserDetails ud) {
+        return statsService.getRankForUser(ud.getUsername());
     }
 }

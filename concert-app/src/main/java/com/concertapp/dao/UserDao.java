@@ -18,4 +18,6 @@ public interface UserDao {
     String getUsernameByUserId( int userId);
 
     List<String> getUserRolesByUsername(String username);
+
+    int getTotalConcertsByUserId(int userId);
 }
