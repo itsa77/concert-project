@@ -21,8 +21,15 @@ public class VenueJdbcDao implements VenueDao{
     }
     @Override
     public Integer getOrCreateVenueId(String venueName, String city, String state){
+        if (venueName == null || city == null || state == null) {
+            throw new DaoException("Venue name, city and state are required");
+        }
+        venueName = venueName.trim();
+        city =city.trim();
+        state = state.trim();
+
         String selectSql = """
-            SELECT venue_id, name, city, state
+            SELECT venue_id
             FROM venue 
             WHERE LOWER(name) = LOWER(?) 
               AND LOWER(city) = LOWER(?) 
@@ -42,11 +49,13 @@ public class VenueJdbcDao implements VenueDao{
            if(insertRs.next()){
                return insertRs.getInt("venue_id");
            }
+           throw new DaoException("Failed to create or retrieve venue id");
+
        } catch (CannotGetJdbcConnectionException e) {
            throw new DaoException("Database connection error", e);
        } catch (DataAccessException e){
            throw new DaoException("Error accessing venue data", e);
-       }return null;
+       }
     }
     @Override
     public Venue getVenueById(int venueId) {

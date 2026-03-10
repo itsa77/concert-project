@@ -44,7 +44,12 @@ public class ConcertService {
 
         Concert concert = new Concert();
         concert.setArtistId(artistId);
-        concert.setVenueId(dto.getVenueId());
+        Integer venueId = venueDao.getOrCreateVenueId(
+                dto.getVenueName(),
+                dto.getVenueCity(),
+                dto.getVenueState()
+        );
+        concert.setVenueId(venueId);
         concert.setDate(dto.getDate());
         concert.setStartTime(dto.getStartTime());
         concert.setCreatedBy(userId);

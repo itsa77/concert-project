@@ -22,7 +22,7 @@ public class OpeningActJdbcDao implements OpeningActDao{
     public void insertOpeningActs(int concertId, List<Integer> actIds) {
         if (actIds == null || actIds.isEmpty()) return;
         String sql = """
-        INSERT INTO concert_opening_act (concert_id, artist_id)
+        INSERT INTO concert_opening_act (concert_event_id, artist_id)
         VALUES (?, ?)
         """;
         try {
@@ -42,7 +42,7 @@ public class OpeningActJdbcDao implements OpeningActDao{
         String sql = """
                 SELECT artist_id
                 FROM concert_opening_act
-                WHERE concert_id = ?
+                WHERE concert_event_id = ?
                 """;
         try {
             SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, concertId);
