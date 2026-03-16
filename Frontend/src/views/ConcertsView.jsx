@@ -8,6 +8,7 @@ export default function ConcertsView() {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeFilter, setActiveFilter] =useState("all");
 
+
     useEffect(() => {
         async function loadConcerts() {
             try {

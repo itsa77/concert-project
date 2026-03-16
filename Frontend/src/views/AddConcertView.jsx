@@ -17,6 +17,59 @@ export default function AddConcertView() {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const US_STATES = [
+  { code: "AL", name: "Alabama" }, 
+  { code: "AK", name: "Alaska" }, 
+  { code: "AZ", name: "Arizona" }, 
+  { code: "AR", name: "Arkansas" },
+  { code: "CA", name: "California" }, 
+  { code: "CO", name: "Colorado" },
+  { code: "CT", name: "Connecticut" }, 
+  { code: "DE", name: "Delaware" },
+  { code: "FL", name: "Florida" }, 
+  { code: "GA", name: "Georgia" },
+  { code: "HI", name: "Hawaii" }, 
+  { code: "ID", name: "Idaho" },
+  { code: "IL", name: "Illinois" }, 
+  { code: "IN", name: "Indiana" },
+  { code: "IA", name: "Iowa" }, 
+  { code: "KS", name: "Kansas" },
+  { code: "KY", name: "Kentucky" }, 
+  { code: "LA", name: "Louisiana" },
+  { code: "ME", name: "Maine" },
+  { code: "MD", name: "Maryland" },
+  { code: "MA", name: "Massachusetts" },
+  { code: "MI", name: "Michigan" },
+  { code: "MN", name: "Minnesota" },
+  { code: "MS", name: "Mississippi" },
+  { code: "MO", name: "Missouri" },
+  { code: "MT", name: "Montana" },
+  { code: "NE", name: "Nebraska" },
+  { code: "NV", name: "Nevada" },
+  { code: "NH", name: "New Hampshire" },
+  { code: "NJ", name: "New Jersey" },
+  { code: "NM", name: "New Mexico" },
+  { code: "NY", name: "New York" },
+  { code: "NC", name: "North Carolina" },
+  { code: "ND", name: "North Dakota" },
+  { code: "OH", name: "Ohio" },
+  { code: "OK", name: "Oklahoma" },
+  { code: "OR", name: "Oregon" },
+  { code: "PA", name: "Pennsylvania" },
+  { code: "RI", name: "Rhode Island" },
+  { code: "SC", name: "South Carolina" },
+  { code: "SD", name: "South Dakota" },
+  { code: "TN", name: "Tennessee" },
+  { code: "TX", name: "Texas" },
+  { code: "UT", name: "Utah" },
+  { code: "VT", name: "Vermont" },
+  { code: "VA", name: "Virginia" },
+  { code: "WA", name: "Washington" },
+  { code: "WV", name: "West Virginia" },
+  { code: "WI", name: "Wisconsin" },
+  { code: "WY", name: "Wyoming" }
+];
+
     function handleOpeningActChange(index, value) {
         const updateActs = [...openingActNames];
         updateActs[index] = value;
@@ -83,7 +136,7 @@ export default function AddConcertView() {
 
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Artist Name</label>
+                    <label>Main Artist Name</label>
                     <input
                         type="text"
                         value={artistName}
@@ -110,12 +163,19 @@ export default function AddConcertView() {
                 </div>
 
                 <div>
-                    <label>Venue State</label>
-                    <input
-                        type="text"
+                    <label htmlFor="VenueState">Venue State</label>
+                    <select
+                        id="venueState"
                         value={venueState}
                         onChange={(e) => setVenueState(e.target.value)}
-                    />
+                    >
+                        <option value="">Select state</option>
+                        {US_STATES.map((state) => (
+                            <option key={state.code} value={state.name}>
+                                {state.code} - {state.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div>

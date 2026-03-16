@@ -193,3 +193,14 @@
 .concert-card:hover {
   box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
+
+input,
+select {
+  width: 100%;
+  max-width: 280;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  background: white;
+}
