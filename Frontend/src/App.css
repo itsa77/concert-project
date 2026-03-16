@@ -52,3 +52,144 @@
   min-height: 300px;
   border-radius: 0 6px 6px 6px;
 }
+
+/* ===== Page wrapper for the concerts page ===== */
+/* Adds spacing around the whole page */
+.concerts-page {
+  padding: 20px;
+}
+
+/* ===== Container holding filter buttons and search bar ===== */
+/* Creates a horizontal layout with buttons on the left and search on the right */
+.concert-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+}
+
+/* ===== Container for the filter buttons ===== */
+/* Allows buttons to wrap onto multiple rows like your sketch */
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 70%;
+}
+
+/* ===== Base style for all filter buttons ===== */
+.filter-buttons button {
+  padding: 8px 14px;
+  border: 1px solid #bbb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ===== Hover effect for filter buttons ===== */
+.filter-buttons button:hover {
+  background: #f0f0f0;
+}
+
+/* ===== Style for the currently selected filter ===== */
+.filter-buttons button.active {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+/* ===== Search bar input ===== */
+/* Positioned to the right of the filter buttons */
+.concert-search {
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* ===== Container for the list of concert cards ===== */
+/* Stacks cards vertically with space between them */
+.concert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===== Individual concert card ===== */
+/* Creates the big box like in your sketch */
+.concert-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  background: white;
+}
+
+/* ===== Left side of the concert card ===== */
+/* Contains artist/festival, tour name, and opening acts */
+.concert-card-left {
+  flex: 1;
+}
+
+/* ===== Main concert title (artist or festival + venue) ===== */
+.concert-card-left h3 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+/* ===== Tour name styling ===== */
+/* Slightly muted text under the main title */
+.concert-tour {
+  margin-bottom: 10px;
+  font-style: italic;
+  color: #555;
+}
+
+/* ===== Opening acts list ===== */
+/* Indented bullet list under the main artist */
+.opening-acts {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  color: #333;
+}
+
+/* ===== Individual opening act item ===== */
+.opening-acts li {
+  margin-bottom: 4px;
+}
+
+/* ===== Right side of the concert card ===== */
+/* Contains date and location */
+.concert-card-right {
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+}
+
+/* ===== Concert date styling ===== */
+.concert-date {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== City / State styling ===== */
+.concert-location {
+  font-size: 16px;
+  color: #444;
+}
+
+.concert-card:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}

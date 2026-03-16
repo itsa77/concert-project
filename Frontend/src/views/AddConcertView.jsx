@@ -78,7 +78,7 @@ export default function AddConcertView() {
     }
 
     return (
-        <div classname="add-concert-view">
+        <div className="add-concert-view">
             <h1>Add Concert</h1>
 
             <form onSubmit={handleSubmit}>
