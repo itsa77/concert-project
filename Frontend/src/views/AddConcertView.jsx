@@ -16,6 +16,7 @@ export default function AddConcertView() {
     const [openingActNames, setOpeningActNames] = useState([""]);
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [eventType, setEventType] = useState("concert");
 
     const US_STATES = [
   { code: "AL", name: "Alabama" }, 
@@ -94,21 +95,23 @@ export default function AddConcertView() {
             !venueName.trim() ||
             !venueCity.trim() ||
             !venueState.trim() ||
-            !date
+            !date ||
+            (eventType === "festival" && !festivalName.trim())
         ) {
             setError("Artist, venue name, city, state, and date are required.");
             return;
         }
 
         const concertData = {
+            eventType,
             artistName: artistName.trim(),
             venueName: venueName.trim(),
             venueCity: venueCity.trim(),
             venueState: venueState.trim(),
             date,
             startTime: startTime ? startTime.trim() : null,
-            tourName: tourName.trim() || null,
-            festivalName: festivalName.trim() || null,
+            tourName: eventType === "concert" ? tourName.trim() || null : null,
+            festivalName: eventType === "festival" ? festivalName.trim() : null,
             openingActNames: openingActNames
                 .map((name) => name.trim())
                 .filter((name) => name.length > 0),
@@ -134,10 +137,31 @@ export default function AddConcertView() {
         <div className="add-concert-view">
             <h1>Add Concert</h1>
 
+            <div className="event-type-toggle">
+                <button
+                    type="button"
+                    className={eventType === "concert" ? "active" : ""}
+                    onClick={() => setEventType("concert")}
+                >
+                    Concert
+                </button> 
+
+                <button
+                    type="button"
+                    className={eventType === "festival" ? "active" : ""}
+                    onClick={() => setEventType("festival")}
+                >
+                    Festival
+                </button>
+            </div>
+
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Main Artist Name</label>
+                    <label htmlFor="artistName">
+                        {eventType === "festival" ? "Featured Artist" : "Artist Name"}
+                    </label>
                     <input
+                        id="artistName"
                         type="text"
                         value={artistName}
                         onChange={(e) => setArtistName(e.target.value)}
@@ -163,7 +187,7 @@ export default function AddConcertView() {
                 </div>
 
                 <div>
-                    <label htmlFor="VenueState">Venue State</label>
+                    <label htmlFor="venueState">Venue State</label>
                     <select
                         id="venueState"
                         value={venueState}
@@ -196,26 +220,34 @@ export default function AddConcertView() {
                     />
                 </div>
 
+            {eventType === "concert" && (
                 <div>
-                    <lable>Tour Name</lable>
+                    <lable htmlFor="tourName">Tour Name</lable>
                     <input
+                        id="tourName"
                         type="text"
                         value={tourName}
                         onChange={(e) => setTourName(e.target.value)}
                     />
                 </div>
+            )}
 
+            {eventType === "festival" && (
                 <div>
-                    <lable>Festival Name</lable>
+                    <lable htmpFor="festivalName">Festival Name</lable>
                     <input
+                        id="festivalName"
                         type="text"
                         value={festivalName}
                         onChange={(e) => setFestivalName(e.target.value)}
                     />
                 </div>
+            )}
 
                 <div>
-                    <label>Opening Acts</label>
+                    <label>
+                        {eventType === "festival" ? "Other Artists" : "Opening Acts"}
+                    </label>
 
                     {openingActNames.map((act,index) => (
                         <div key={index}>
